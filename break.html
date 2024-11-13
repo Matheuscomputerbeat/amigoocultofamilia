@@ -3,56 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resetar Amigo Oculto</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-    }
-    h1 {
-      color: #ffffff;
-      text-align: center;
-    }
-    .container {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
-    button {
-      padding: 10px;
-      background-color: #dc3545;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #c82333;
-    }
-  </style>
+  <title>Resetar Local Storage</title>
 </head>
 <body>
-  <h1>Resetar Amigo Oculto</h1>
-  <div class="container">
-    <button onclick="resetLocalStorage()">Resetar Dados</button>
-  </div>
+  <h1>Resetar Par de Amigo Oculto</h1>
+  <button onclick="resetLocalStorage()">Resetar</button>
 
   <script>
     function resetLocalStorage() {
-      localStorage.clear();
-      alert("Dados do amigo oculto foram resetados com sucesso!");
+      if (confirm("Tem certeza de que quer resetar os pares?")) {
+        localStorage.clear(); // Limpa todo o localStorage
+        alert("Pares resetados com sucesso!");
+      }
     }
   </script>
 </body>

@@ -69,9 +69,13 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core-min.js"></script>
   <script>
     let names = [];
     let pairs = {};
+
+    // Chave única para a geração dos pares
+    const uniqueKey = "familia2024"; // Substitua com uma chave única de grupo, como o nome do grupo ou algo fixo
 
     // Função para carregar nomes do GitHub automaticamente
     fetch('https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt')
@@ -91,13 +95,13 @@
           return;
         }
 
-        // Verificar se os pares já estão salvos no localStorage
-        const storedPairs = localStorage.getItem("pairs");
+        // Verificar se os pares já estão salvos no localStorage com base na chave única
+        const storedPairs = localStorage.getItem(generateHash(uniqueKey));
         if (storedPairs) {
           pairs = JSON.parse(storedPairs); // Carregar pares do localStorage
         } else {
           generatePairs(); // Caso contrário, gerar novos pares
-          localStorage.setItem("pairs", JSON.stringify(pairs)); // Salvar pares no localStorage
+          localStorage.setItem(generateHash(uniqueKey), JSON.stringify(pairs)); // Salvar pares no localStorage
         }
 
         alert("Pares carregados com sucesso!");
@@ -106,6 +110,11 @@
         console.error("Erro ao carregar o arquivo:", error);
         alert("Erro ao carregar o arquivo: " + error);
       });
+
+    // Função para gerar um hash único baseado na chave
+    function generateHash(key) {
+      return CryptoJS.MD5(key).toString(); // Gera um hash MD5 único
+    }
 
     // Função para gerar pares de amigo oculto
     function generatePairs() {

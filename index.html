@@ -1,152 +1,116 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amigo Oculto Secreto</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-    }
-    h1 {
-      color: #ffffff;
-      text-align: center;
-    }
-    .container {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    button {
-      padding: 10px;
-      background-color: #28a745;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    .result {
-      margin-top: 20px;
-      padding: 20px;
-      background: #f9f9f9;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: none;
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-    }
-    .result p {
-      margin: 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigo Oculto Secreto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F9C8D7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #ff6699;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #ff6699;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #ff3385;
+        }
+        #par {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ff6699;
+        }
+    </style>
 </head>
 <body>
-  <h1>Amigo Oculto Secreto</h1>
-  <div class="container">
-    <input type="text" id="nameInput" placeholder="Digite seu nome para ver seu par">
-    <button onclick="viewSecretSanta()">Ver Meu Amigo Oculto</button>
-    <div class="result" id="result">
-      <p id="secretSantaMessage"></p>
+
+    <div class="container">
+        <h1>Amigo Oculto Secreto</h1>
+        <input type="text" id="nome" placeholder="Digite seu nome" />
+        <button onclick="mostrarPar()">Ver Meu Amigo Oculto</button>
+        <p id="par"></p>
     </div>
-  </div>
 
-  <script>
-    let names = [];
-    let pairs = {};
+    <script>
+        // Função para gerar os pares de amigo oculto e armazenar no localStorage
+        function gerarPar() {
+            const pessoas = JSON.parse(localStorage.getItem("nomes")); // Recupera os nomes dos participantes
+            const pares = JSON.parse(localStorage.getItem("pares")) || {};
 
-    // Função para carregar nomes do GitHub automaticamente quando a página carregar
-    window.onload = function() {
-      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt';
-      fetch(url)
-        .then(response => response.text())
-        .then(content => {
-          console.log("Conteúdo carregado:", content);
+            if (Object.keys(pares).length === pessoas.length) {
+                // Já há pares definidos, não precisa gerar novamente
+                alert("Os pares já foram definidos!");
+                return;
+            }
 
-          // Dividir por quebras de linha, remover espaços extras e filtrar entradas vazias
-          names = content
-            .trim()
-            .split('\n')
-            .map(name => name.trim())
-            .filter(name => name.length > 0);
+            // Caso contrário, gera os pares
+            let nomesRestantes = [...pessoas];
+            for (let pessoa of pessoas) {
+                let par;
+                do {
+                    par = nomesRestantes[Math.floor(Math.random() * nomesRestantes.length)];
+                } while (par === pessoa); // Garantir que a pessoa não sorteie a si mesma
 
-          console.log("Nomes carregados:", names);
+                pares[pessoa] = par;
+                nomesRestantes = nomesRestantes.filter(nome => nome !== par); // Remove o par sorteado da lista
 
-          if (names.length < 2) {
-            alert("O arquivo precisa ter pelo menos dois nomes.");
-            return;
-          }
-
-          generatePairs();
-          alert("Nomes carregados e pares gerados com sucesso!");
-        })
-        .catch(error => {
-          console.error("Erro ao carregar o arquivo:", error);
-          alert("Erro ao carregar o arquivo: " + error);
-        });
-    };
-
-    // Função para gerar pares de amigo oculto
-    function generatePairs() {
-      let givers = [...names];
-      let receivers = [...names];
-      pairs = {};
-
-      while (givers.length > 0) {
-        const giver = givers.pop();
-        const possibleReceivers = receivers.filter(receiver => receiver.toLowerCase() !== giver.toLowerCase());
-        if (possibleReceivers.length === 0) {
-          alert("Não foi possível formar um par para " + giver + ". Tente novamente.");
-          return;
+                // Atualiza o localStorage com os pares gerados
+                localStorage.setItem("pares", JSON.stringify(pares));
+            }
+            alert("Pares gerados com sucesso!");
         }
-        
-        const receiver = possibleReceivers[Math.floor(Math.random() * possibleReceivers.length)];
-        
-        pairs[giver.toLowerCase()] = receiver;
-        receivers.splice(receivers.indexOf(receiver), 1);
-      }
-    }
 
-    function viewSecretSanta() {
-      const nameInput = document.getElementById('nameInput').value.trim().toLowerCase();
-      const resultDiv = document.getElementById('result');
-      const message = document.getElementById('secretSantaMessage');
+        // Função para mostrar o par do usuário
+        function mostrarPar() {
+            const nome = document.getElementById('nome').value;
+            const pares = JSON.parse(localStorage.getItem("pares")) || {};
 
-      if (pairs[nameInput]) {
-        message.textContent = "Seu amigo oculto é: " + pairs[nameInput];
-        resultDiv.style.display = 'block';
-      } else if (!names.map(name => name.toLowerCase()).includes(nameInput)) {
-        message.textContent = "O nome \"" + nameInput + "\" não está registrado.";
-        resultDiv.style.display = 'block';
-      } else {
-        message.textContent = "Erro: nenhum par foi encontrado para " + nameInput + ".";
-        resultDiv.style.display = 'block';
-      }
-    }
-  </script>
+            if (pares[nome]) {
+                document.getElementById('par').innerText = `Seu amigo oculto é: ${pares[nome]}`;
+            } else {
+                document.getElementById('par').innerText = "Erro: nenhum par foi encontrado para " + nome;
+            }
+        }
+
+        // Função para adicionar participantes e salvar os nomes no localStorage
+        function adicionarPessoas(pessoas) {
+            localStorage.setItem("nomes", JSON.stringify(pessoas));
+        }
+
+        // Verifica se já há pares gerados, caso contrário, chama a função para gerar pares
+        if (!localStorage.getItem("pares")) {
+            gerarPar(); // Gera os pares se não houver no localStorage
+        }
+    </script>
 </body>
 </html>

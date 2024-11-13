@@ -5,64 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amigo Oculto Secreto</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-    }
-
-    h1 {
-      color: #ffffff;
-      text-align: center;
-    }
-
-    .container {
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    input[type="text"], input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-
-    button {
-      padding: 10px;
-      background-color: #28a745;
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #218838;
-    }
-
-    .result {
-      margin-top: 20px;
-      padding: 20px;
-      background: #f9f9f9;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: none;
-    }
+    /* Seu CSS */
   </style>
 </head>
 <body>
@@ -97,8 +40,11 @@
       fetch(url)
         .then(response => response.text())
         .then(content => {
-          names = content.replace(/"/g, '').split(',')
-            .map(name => name.trim())
+          console.log("Conteúdo do arquivo:", content); // Adicionado para debug
+          
+          // Ajuste para extrair os nomes de forma adequada
+          names = content.split('\n')
+            .map(name => name.replace(/"/g, '').trim())
             .filter(name => name.length > 0);
 
           if (names.length < 2) {

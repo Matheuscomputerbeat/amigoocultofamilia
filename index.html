@@ -73,36 +73,39 @@
     let names = [];
     let pairs = {};
 
-    // Função para carregar nomes do GitHub automaticamente quando a página carregar
-    window.onload = function() {
-      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt';
-      fetch(url)
-        .then(response => response.text())
-        .then(content => {
-          console.log("Conteúdo carregado:", content);
+    // Função para carregar nomes do GitHub automaticamente
+    fetch('https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt')
+      .then(response => response.text())
+      .then(content => {
+        // Dividir por quebras de linha, remover espaços extras e filtrar entradas vazias
+        names = content
+          .trim()
+          .split('\n')
+          .map(name => name.trim())
+          .filter(name => name.length > 0);
 
-          // Dividir por quebras de linha, remover espaços extras e filtrar entradas vazias
-          names = content
-            .trim()
-            .split('\n')
-            .map(name => name.trim())
-            .filter(name => name.length > 0);
+        console.log("Nomes carregados:", names);
 
-          console.log("Nomes carregados:", names);
+        if (names.length < 2) {
+          alert("O arquivo precisa ter pelo menos dois nomes.");
+          return;
+        }
 
-          if (names.length < 2) {
-            alert("O arquivo precisa ter pelo menos dois nomes.");
-            return;
-          }
+        // Verificar se os pares já estão salvos no localStorage
+        const storedPairs = localStorage.getItem("pairs");
+        if (storedPairs) {
+          pairs = JSON.parse(storedPairs); // Carregar pares do localStorage
+        } else {
+          generatePairs(); // Caso contrário, gerar novos pares
+          localStorage.setItem("pairs", JSON.stringify(pairs)); // Salvar pares no localStorage
+        }
 
-          generatePairs();
-          alert("Nomes carregados e pares gerados com sucesso!");
-        })
-        .catch(error => {
-          console.error("Erro ao carregar o arquivo:", error);
-          alert("Erro ao carregar o arquivo: " + error);
-        });
-    };
+        alert("Pares carregados com sucesso!");
+      })
+      .catch(error => {
+        console.error("Erro ao carregar o arquivo:", error);
+        alert("Erro ao carregar o arquivo: " + error);
+      });
 
     // Função para gerar pares de amigo oculto
     function generatePairs() {
@@ -114,7 +117,7 @@
         const giver = givers.pop();
         const possibleReceivers = receivers.filter(receiver => receiver.toLowerCase() !== giver.toLowerCase());
         if (possibleReceivers.length === 0) {
-          alert("Não foi possível formar um par para " + giver + ". Tente novamente.");
+          alert(`Não foi possível formar um par para ${giver}. Tente novamente.`);
           return;
         }
         
@@ -131,13 +134,13 @@
       const message = document.getElementById('secretSantaMessage');
 
       if (pairs[nameInput]) {
-        message.textContent = "Seu amigo oculto é: " + pairs[nameInput];
+        message.textContent = `Seu amigo oculto é: ${pairs[nameInput]}`;
         resultDiv.style.display = 'block';
       } else if (!names.map(name => name.toLowerCase()).includes(nameInput)) {
-        message.textContent = "O nome \"" + nameInput + "\" não está registrado.";
+        message.textContent = `O nome "${nameInput}" não está registrado.`;
         resultDiv.style.display = 'block';
       } else {
-        message.textContent = "Erro: nenhum par foi encontrado para " + nameInput + ".";
+        message.textContent = `Erro: nenhum par foi encontrado para ${nameInput}.`;
         resultDiv.style.display = 'block';
       }
     }

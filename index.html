@@ -29,7 +29,7 @@
       max-width: 400px;
       text-align: center;
     }
-    input[type="text"] {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
       font-size: 16px;
@@ -71,6 +71,7 @@
   <div class="container">
     <input type="text" id="nameInput" placeholder="Digite seu nome para ver seu par">
     <button onclick="viewSecretSanta()">Ver Meu Amigo Oculto</button>
+    <br><br>
     <input type="password" id="adminPassword" placeholder="Digite a senha de admin">
     <button class="reset-button" onclick="resetPairs()">Resetar Pares</button>
     <div class="result" id="result">
@@ -79,6 +80,7 @@
   </div>
 
   <script>
+    const ADMIN_PASSWORD = "123456789####"; // Altere para sua senha
     let names = [];
     let pairs = {};
 
@@ -92,14 +94,10 @@
           .split('\n')
           .map(name => name.trim())
           .filter(name => name.length > 0);
-        
-        // Verificar se já existem pares armazenados
-        const storedPairs = localStorage.getItem('pairs');
-        if (storedPairs) {
-          pairs = JSON.parse(storedPairs);
-        } else {
-          generatePairs(); // Caso não haja, gera pares pela primeira vez
-        }
+
+        console.log("Nomes carregados:", names);
+
+        generatePairs(); // Gerar pares assim que os nomes forem carregados
       })
       .catch(error => {
         console.error("Erro ao carregar o arquivo:", error);
@@ -155,10 +153,10 @@
     function resetPairs() {
       const enteredPassword = document.getElementById('adminPassword').value;
 
-      if (enteredPassword === "123456789####") { // Substitua pela sua senha
-        localStorage.removeItem("pairs"); // Limpa os pares salvos
-        generatePairs(); // Gera novos pares
+      if (enteredPassword === ADMIN_PASSWORD) {
         alert("Pares resetados com sucesso!");
+        generatePairs(); // Gerar novos pares e armazenar novamente
+        localStorage.removeItem("pairs"); // Remover os pares antigos do localStorage
       } else {
         alert("Senha incorreta. Você não tem permissão para resetar os pares.");
       }

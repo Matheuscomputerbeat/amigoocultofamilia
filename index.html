@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,12 +16,10 @@
       padding: 0;
       background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
     }
-
     h1 {
       color: #ffffff;
       text-align: center;
     }
-
     .container {
       background: #ffffff;
       padding: 30px;
@@ -32,7 +29,6 @@
       max-width: 400px;
       text-align: center;
     }
-
     input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
@@ -41,7 +37,6 @@
       border-radius: 8px;
       margin-bottom: 10px;
     }
-
     button {
       padding: 10px;
       background-color: #28a745;
@@ -51,11 +46,9 @@
       cursor: pointer;
       font-size: 16px;
     }
-
     button:hover {
       background-color: #218838;
     }
-
     .result {
       margin-top: 20px;
       padding: 20px;
@@ -69,11 +62,9 @@
 <body>
   <h1>Amigo Oculto Secreto</h1>
   <div class="container">
-    <!-- Campo para senha de administrador -->
     <input type="password" id="adminPassword" placeholder="Digite a senha de admin">
     <button onclick="checkPassword()">Entrar</button>
 
-    <!-- Seção para carregar os nomes automaticamente -->
     <button onclick="loadNamesFromGitHub()">Carregar Nomes do GitHub</button>
 
     <input type="text" id="nameInput" placeholder="Digite seu nome para ver seu par">
@@ -84,16 +75,11 @@
   </div>
 
   <script>
-    // Senha para liberar o acesso
-    const ADMIN_PASSWORD = "123456789####"; // Altere para sua senha desejada
+    const ADMIN_PASSWORD = "123456789####"; // Altere para sua senha
 
-    // Lista de nomes adicionados via arquivo
     let names = [];
-    
-    // Pares de amigo oculto armazenados temporariamente
     let pairs = {};
 
-    // Função para verificar a senha do administrador
     function checkPassword() {
       const enteredPassword = document.getElementById("adminPassword").value;
       if (enteredPassword === ADMIN_PASSWORD) {
@@ -103,48 +89,38 @@
       }
     }
 
-    // Função para carregar nomes diretamente do GitHub
+    // Função para carregar nomes do GitHub
     function loadNamesFromGitHub() {
-  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL do arquivo no GitHub
-  
-  // Tentando carregar o conteúdo do arquivo
-  fetch(url)
-    .then(response => response.text())
-    .then(content => {
-      console.log("Conteúdo carregado do arquivo:", content); // Debug para verificar o conteúdo
+      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt';
+      fetch(url)
+        .then(response => response.text())
+        .then(content => {
+          console.log("Conteúdo carregado:", content);
 
-      // Verificando se o conteúdo não está vazio
-      if (!content.trim()) {
-        alert("O arquivo está vazio!");
-        return;
-      }
+          // Dividir por quebras de linha, remover espaços extras e filtrar entradas vazias
+          names = content
+            .trim()
+            .split('\n')
+            .map(name => name.trim())
+            .filter(name => name.length > 0);
 
-      // Aqui estamos tratando o conteúdo como uma lista separada por vírgulas
-      names = content.replace(/"/g, '').split(',')
-        .map(name => name.trim())
-        .filter(name => name.length > 0);
+          console.log("Nomes carregados:", names);
 
-      console.log("Nomes carregados:", names); // Verificando os nomes carregados
+          if (names.length < 2) {
+            alert("O arquivo precisa ter pelo menos dois nomes.");
+            return;
+          }
 
-      if (names.length < 2) {
-        alert("O arquivo precisa ter pelo menos dois nomes.");
-        return;
-      }
+          generatePairs();
+          alert("Nomes carregados e pares gerados com sucesso!");
+        })
+        .catch(error => {
+          console.error("Erro ao carregar o arquivo:", error);
+          alert("Erro ao carregar o arquivo: " + error);
+        });
+    }
 
-      // Gerando os pares de amigo oculto
-      generatePairs();
-      alert("Nomes carregados e pares gerados com sucesso!");
-    })
-    .catch(error => {
-      console.error("Erro ao carregar o arquivo:", error); // Mensagem de erro
-      alert("Erro ao carregar o arquivo: " + error);
-    });
-}
-
-
-
-
-
+    // Função para gerar pares de amigo oculto
     function generatePairs() {
       let givers = [...names];
       let receivers = [...names];

@@ -1,6 +1,1 @@
-Matheus
-Gislene
-Sinesio
-Felipe
-Luiza
-Renata
+"matheus", "gislene", "sinesio", "felipe", "luiza", "renata"

@@ -104,25 +104,29 @@
 
     // Função para carregar nomes diretamente do GitHub
     function loadNamesFromGitHub() {
-      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt?token=GHSAT0AAAAAACZ2Z2LM7SH4D55WSDB5U4LGZZURZSA'; // Substitua pela URL do arquivo .txt no seu repositório do GitHub
+  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL raw do arquivo .txt
 
-      fetch(url)
-        .then(response => response.text())
-        .then(content => {
-          names = content.split('\n').map(name => name.trim()).filter(name => name !== "");
+  fetch(url)
+    .then(response => response.text())
+    .then(content => {
+      // Dividindo o conteúdo em nomes e removendo espaços extras e linhas vazias
+      names = content.split('\n')
+        .map(name => name.trim())
+        .filter(name => name !== "");
 
-          if (names.length < 2) {
-            alert("O arquivo precisa ter pelo menos dois nomes.");
-            return;
-          }
+      if (names.length < 2) {
+        alert("O arquivo precisa ter pelo menos dois nomes.");
+        return;
+      }
 
-          generatePairs();
-          alert("Nomes carregados e pares gerados com sucesso!");
-        })
-        .catch(error => {
-          alert("Erro ao carregar o arquivo: " + error);
-        });
-    }
+      generatePairs();
+      alert("Nomes carregados e pares gerados com sucesso!");
+    })
+    .catch(error => {
+      alert("Erro ao carregar o arquivo: " + error);
+    });
+}
+
 
     function generatePairs() {
       let givers = [...names];

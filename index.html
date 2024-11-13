@@ -69,7 +69,9 @@
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core-min.js"></script> <!-- Apenas uma inclusão -->
+  <!-- Carregar a biblioteca CryptoJS antes do código que a utiliza -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+
   <script>
     let names = [];
     let pairs = {};

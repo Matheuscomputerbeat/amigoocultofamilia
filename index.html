@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -88,6 +89,9 @@
 
     // Lista de nomes adicionados via arquivo
     let names = [];
+    
+    // Pares de amigo oculto armazenados temporariamente
+    let pairs = {};
 
     // Função para verificar a senha do administrador
     function checkPassword() {
@@ -100,31 +104,27 @@
     }
 
     // Função para carregar nomes diretamente do GitHub
-      // Função para carregar nomes diretamente do GitHub
     function loadNamesFromGitHub() {
   const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL do arquivo no GitHub
   
   // Tentando carregar o conteúdo do arquivo
-  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL correta
   fetch(url)
     .then(response => response.text())
     .then(content => {
       console.log("Conteúdo carregado do arquivo:", content); // Debug para verificar o conteúdo
+
       // Verificando se o conteúdo não está vazio
       if (!content.trim()) {
         alert("O arquivo está vazio!");
         return;
       }
+
       // Aqui estamos tratando o conteúdo como uma lista separada por vírgulas
       names = content.replace(/"/g, '').split(',')
         .map(name => name.trim())
         .filter(name => name.length > 0);
-      console.log("Conteúdo carregado do arquivo:", content);
 
       console.log("Nomes carregados:", names); // Verificando os nomes carregados
-      // Verifique o conteúdo e continue como antes
-      names = content.split('\n').map(name => name.trim()).filter(name => name !== "");
-      console.log("Nomes carregados:", names);
 
       if (names.length < 2) {
         alert("O arquivo precisa ter pelo menos dois nomes.");
@@ -137,51 +137,49 @@
     })
     .catch(error => {
       console.error("Erro ao carregar o arquivo:", error); // Mensagem de erro
-      console.error("Erro ao carregar o arquivo:", error);
       alert("Erro ao carregar o arquivo: " + error);
     });
 }
-    // Função para gerar e salvar os pares de amigo oculto
+
+
+
+
+
     function generatePairs() {
-      const pairs = {};
-      const shuffledNames = shuffleArray([...names]); // Embaralha os nomes
+      let givers = [...names];
+      let receivers = [...names];
+      pairs = {};
 
-      // Atribuir pares de amigo oculto
-      for (let i = 0; i < names.length; i++) {
-        pairs[names[i]] = shuffledNames[i];
+      while (givers.length > 0) {
+        const giver = givers.pop();
+        const possibleReceivers = receivers.filter(receiver => receiver.toLowerCase() !== giver.toLowerCase());
+        if (possibleReceivers.length === 0) {
+          alert(`Não foi possível formar um par para ${giver}. Tente novamente.`);
+          return;
+        }
+        
+        const receiver = possibleReceivers[Math.floor(Math.random() * possibleReceivers.length)];
+        
+        pairs[giver.toLowerCase()] = receiver;
+        receivers.splice(receivers.indexOf(receiver), 1);
       }
-
-      // Salvar os pares no Local Storage
-      localStorage.setItem("pairs", JSON.stringify(pairs));
     }
 
-    // Função para embaralhar um array (utilizada para gerar pares aleatórios)
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Troca os elementos
-      }
-      return array;
-    }
-
-    // Função para mostrar o par de amigo oculto de um nome específico
     function viewSecretSanta() {
-      const nameInput = document.getElementById("nameInput").value.trim();
-      const pairs = JSON.parse(localStorage.getItem("pairs"));
+      const nameInput = document.getElementById('nameInput').value.trim().toLowerCase();
+      const resultDiv = document.getElementById('result');
+      const message = document.getElementById('secretSantaMessage');
 
-      if (!pairs) {
-        alert("Pares de amigo oculto não foram gerados.");
-        return;
+      if (pairs[nameInput]) {
+        message.textContent = `Seu amigo oculto é: ${pairs[nameInput]}`;
+        resultDiv.style.display = 'block';
+      } else if (!names.map(name => name.toLowerCase()).includes(nameInput)) {
+        message.textContent = `O nome "${nameInput}" não está registrado.`;
+        resultDiv.style.display = 'block';
+      } else {
+        message.textContent = `Erro: nenhum par foi encontrado para ${nameInput}.`;
+        resultDiv.style.display = 'block';
       }
-
-      if (!nameInput || !pairs[nameInput]) {
-        alert("Nome não encontrado ou não registrado.");
-        return;
-      }
-
-      // Mostrar o par de amigo oculto
-      document.getElementById("secretSantaMessage").textContent = `${nameInput} tem como amigo oculto: ${pairs[nameInput]}`;
-      document.getElementById("result").style.display = "block";
     }
   </script>
 </body>

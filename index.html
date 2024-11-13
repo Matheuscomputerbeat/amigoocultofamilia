@@ -16,10 +16,12 @@
       padding: 0;
       background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
     }
+
     h1 {
       color: #ffffff;
       text-align: center;
     }
+
     .container {
       background: #ffffff;
       padding: 30px;
@@ -29,6 +31,7 @@
       max-width: 400px;
       text-align: center;
     }
+
     input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
@@ -37,6 +40,7 @@
       border-radius: 8px;
       margin-bottom: 10px;
     }
+
     button {
       padding: 10px;
       background-color: #28a745;
@@ -46,9 +50,11 @@
       cursor: pointer;
       font-size: 16px;
     }
+
     button:hover {
       background-color: #218838;
     }
+
     .result {
       margin-top: 20px;
       padding: 20px;
@@ -64,9 +70,7 @@
   <div class="container">
     <input type="password" id="adminPassword" placeholder="Digite a senha de admin">
     <button onclick="checkPassword()">Entrar</button>
-
     <button onclick="loadNamesFromGitHub()">Carregar Nomes do GitHub</button>
-
     <input type="text" id="nameInput" placeholder="Digite seu nome para ver seu par">
     <button onclick="viewSecretSanta()">Ver Meu Amigo Oculto</button>
     <div class="result" id="result">
@@ -75,8 +79,7 @@
   </div>
 
   <script>
-    const ADMIN_PASSWORD = "123456789####"; // Altere para sua senha
-
+    const ADMIN_PASSWORD = "123456789####";
     let names = [];
     let pairs = {};
 
@@ -89,29 +92,27 @@
       }
     }
 
-    // Função para carregar nomes do GitHub
     function loadNamesFromGitHub() {
-      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt';
+      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt';
       fetch(url)
         .then(response => response.text())
         .then(content => {
-          console.log("Conteúdo carregado:", content);
-
-          // Dividir por quebras de linha, remover espaços extras e filtrar entradas vazias
-          names = content
-            .trim()
-            .split('\n')
+          names = content.replace(/"/g, '').split(',')
             .map(name => name.trim())
             .filter(name => name.length > 0);
-
-          console.log("Nomes carregados:", names);
 
           if (names.length < 2) {
             alert("O arquivo precisa ter pelo menos dois nomes.");
             return;
           }
 
-          generatePairs();
+          if (localStorage.getItem("pairs")) {
+            pairs = JSON.parse(localStorage.getItem("pairs"));
+          } else {
+            generatePairs();
+            localStorage.setItem("pairs", JSON.stringify(pairs));
+          }
+
           alert("Nomes carregados e pares gerados com sucesso!");
         })
         .catch(error => {
@@ -120,7 +121,6 @@
         });
     }
 
-    // Função para gerar pares de amigo oculto
     function generatePairs() {
       let givers = [...names];
       let receivers = [...names];
@@ -135,7 +135,6 @@
         }
         
         const receiver = possibleReceivers[Math.floor(Math.random() * possibleReceivers.length)];
-        
         pairs[giver.toLowerCase()] = receiver;
         receivers.splice(receivers.indexOf(receiver), 1);
       }

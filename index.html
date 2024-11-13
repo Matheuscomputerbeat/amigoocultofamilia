@@ -100,39 +100,47 @@
     }
 
     // Função para carregar nomes diretamente do GitHub
+      // Função para carregar nomes diretamente do GitHub
     function loadNamesFromGitHub() {
-  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // Verifique se o link está correto e público
-
-  // Adicionando mensagem de depuração ao clicar no botão
-  console.log("Botão de Carregar Nomes do GitHub foi clicado.");
-
+  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL do arquivo no GitHub
+  
+  // Tentando carregar o conteúdo do arquivo
+  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL correta
   fetch(url)
-    .then(response => {
-      console.log("Status da resposta:", response.status); // Mostra o status da resposta (200 para sucesso)
-      if (!response.ok) throw new Error("Erro ao carregar o arquivo: " + response.status);
-      return response.text();
-    })
+    .then(response => response.text())
     .then(content => {
-      console.log("Conteúdo carregado do arquivo:", content); // Mostra o conteúdo carregado do arquivo
+      console.log("Conteúdo carregado do arquivo:", content); // Debug para verificar o conteúdo
+      // Verificando se o conteúdo não está vazio
+      if (!content.trim()) {
+        alert("O arquivo está vazio!");
+        return;
+      }
+      // Aqui estamos tratando o conteúdo como uma lista separada por vírgulas
+      names = content.replace(/"/g, '').split(',')
+        .map(name => name.trim())
+        .filter(name => name.length > 0);
+      console.log("Conteúdo carregado do arquivo:", content);
+
+      console.log("Nomes carregados:", names); // Verificando os nomes carregados
+      // Verifique o conteúdo e continue como antes
       names = content.split('\n').map(name => name.trim()).filter(name => name !== "");
+      console.log("Nomes carregados:", names);
 
       if (names.length < 2) {
         alert("O arquivo precisa ter pelo menos dois nomes.");
         return;
       }
 
-      // Salvar nomes no Local Storage
-      localStorage.setItem("names", JSON.stringify(names));
-
-      // Verificar se já foi gerado o par de amigo oculto
-      if (!localStorage.getItem("pairs")) {
-        generatePairs(); // Gerar e armazenar os pares
-      }
+      // Gerando os pares de amigo oculto
+      generatePairs();
+      alert("Nomes carregados e pares gerados com sucesso!");
     })
-    .catch(error => console.error('Erro ao carregar o arquivo:', error));
+    .catch(error => {
+      console.error("Erro ao carregar o arquivo:", error); // Mensagem de erro
+      console.error("Erro ao carregar o arquivo:", error);
+      alert("Erro ao carregar o arquivo: " + error);
+    });
 }
-
-
     // Função para gerar e salvar os pares de amigo oculto
     function generatePairs() {
       const pairs = {};

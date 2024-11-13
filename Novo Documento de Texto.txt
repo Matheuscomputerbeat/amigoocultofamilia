@@ -1,1 +1,6 @@
-"matheus", "gislene", "sinesio", "felipe", "luiza", "renata"
+matheus
+gislene
+sinesio
+felipe
+luiza
+renata

@@ -62,8 +62,6 @@
 <body>
   <h1>Amigo Oculto Secreto</h1>
   <div class="container">
-    <button onclick="loadNamesFromGitHub()">Carregar Nomes do GitHub</button>
-
     <input type="text" id="nameInput" placeholder="Digite seu nome para ver seu par">
     <button onclick="viewSecretSanta()">Ver Meu Amigo Oculto</button>
     <div class="result" id="result">
@@ -75,8 +73,8 @@
     let names = [];
     let pairs = {};
 
-    // Função para carregar nomes do GitHub automaticamente
-    function loadNamesFromGitHub() {
+    // Função para carregar nomes do GitHub automaticamente quando a página carregar
+    window.onload = function() {
       const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt';
       fetch(url)
         .then(response => response.text())
@@ -104,7 +102,7 @@
           console.error("Erro ao carregar o arquivo:", error);
           alert("Erro ao carregar o arquivo: " + error);
         });
-    }
+    };
 
     // Função para gerar pares de amigo oculto
     function generatePairs() {

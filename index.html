@@ -103,17 +103,18 @@
     }
 
     // Função para carregar nomes diretamente do GitHub
-    function loadNamesFromGitHub() {
-  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL raw do arquivo .txt
+    ffunction loadNamesFromGitHub() {
+  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // A URL correta
 
   fetch(url)
     .then(response => response.text())
     .then(content => {
-      // Dividindo o conteúdo em nomes e removendo espaços extras e linhas vazias
+      // Filtra e remove linhas vazias ou com apenas espaços
       names = content.split('\n')
-        .map(name => name.trim())
-        .filter(name => name !== "");
+        .map(name => name.trim())  // Remove espaços extras
+        .filter(name => name.length > 0); // Remove linhas vazias
 
+      // Verifica se há pelo menos dois nomes
       if (names.length < 2) {
         alert("O arquivo precisa ter pelo menos dois nomes.");
         return;
@@ -126,6 +127,7 @@
       alert("Erro ao carregar o arquivo: " + error);
     });
 }
+
 
 
     function generatePairs() {

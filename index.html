@@ -5,7 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amigo Oculto Secreto</title>
   <style>
-    /* Seu CSS */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    }
+    h1 {
+      color: #ffffff;
+      text-align: center;
+    }
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px;
+      background-color: #28a745;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -13,7 +64,9 @@
   <div class="container">
     <input type="password" id="adminPassword" placeholder="Digite a senha de admin">
     <button onclick="checkPassword()">Entrar</button>
+
     <button onclick="loadNamesFromGitHub()">Carregar Nomes do GitHub</button>
+
     <input type="text" id="nameInput" placeholder="Digite seu nome para ver seu par">
     <button onclick="viewSecretSanta()">Ver Meu Amigo Oculto</button>
     <div class="result" id="result">
@@ -22,7 +75,8 @@
   </div>
 
   <script>
-    const ADMIN_PASSWORD = "123456789####";
+    const ADMIN_PASSWORD = "123456789####"; // Altere para sua senha
+
     let names = [];
     let pairs = {};
 
@@ -35,30 +89,29 @@
       }
     }
 
+    // Função para carregar nomes do GitHub
     function loadNamesFromGitHub() {
-      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt';
+      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt';
       fetch(url)
         .then(response => response.text())
         .then(content => {
-          console.log("Conteúdo do arquivo:", content); // Adicionado para debug
-          
-          // Ajuste para extrair os nomes de forma adequada
-          names = content.split('\n')
-            .map(name => name.replace(/"/g, '').trim())
+          console.log("Conteúdo carregado:", content);
+
+          // Dividir por quebras de linha, remover espaços extras e filtrar entradas vazias
+          names = content
+            .trim()
+            .split('\n')
+            .map(name => name.trim())
             .filter(name => name.length > 0);
+
+          console.log("Nomes carregados:", names);
 
           if (names.length < 2) {
             alert("O arquivo precisa ter pelo menos dois nomes.");
             return;
           }
 
-          if (localStorage.getItem("pairs")) {
-            pairs = JSON.parse(localStorage.getItem("pairs"));
-          } else {
-            generatePairs();
-            localStorage.setItem("pairs", JSON.stringify(pairs));
-          }
-
+          generatePairs();
           alert("Nomes carregados e pares gerados com sucesso!");
         })
         .catch(error => {
@@ -67,6 +120,7 @@
         });
     }
 
+    // Função para gerar pares de amigo oculto
     function generatePairs() {
       let givers = [...names];
       let receivers = [...names];
@@ -81,6 +135,7 @@
         }
         
         const receiver = possibleReceivers[Math.floor(Math.random() * possibleReceivers.length)];
+        
         pairs[giver.toLowerCase()] = receiver;
         receivers.splice(receivers.indexOf(receiver), 1);
       }

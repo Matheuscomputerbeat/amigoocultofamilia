@@ -104,41 +104,31 @@
 
     // Função para carregar nomes diretamente do GitHub
     function loadNamesFromGitHub() {
-  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL do arquivo no GitHub
-  
-  // Tentando carregar o conteúdo do arquivo
+  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // URL correta
+
   fetch(url)
     .then(response => response.text())
     .then(content => {
-      console.log("Conteúdo carregado do arquivo:", content); // Debug para verificar o conteúdo
+      console.log("Conteúdo carregado do arquivo:", content);
 
-      // Verificando se o conteúdo não está vazio
-      if (!content.trim()) {
-        alert("O arquivo está vazio!");
-        return;
-      }
-
-      // Aqui estamos tratando o conteúdo como uma lista separada por vírgulas
-      names = content.replace(/"/g, '').split(',')
-        .map(name => name.trim())
-        .filter(name => name.length > 0);
-
-      console.log("Nomes carregados:", names); // Verificando os nomes carregados
+      // Verifique o conteúdo e continue como antes
+      names = content.split('\n').map(name => name.trim()).filter(name => name !== "");
+      console.log("Nomes carregados:", names);
 
       if (names.length < 2) {
         alert("O arquivo precisa ter pelo menos dois nomes.");
         return;
       }
 
-      // Gerando os pares de amigo oculto
       generatePairs();
       alert("Nomes carregados e pares gerados com sucesso!");
     })
     .catch(error => {
-      console.error("Erro ao carregar o arquivo:", error); // Mensagem de erro
+      console.error("Erro ao carregar o arquivo:", error);
       alert("Erro ao carregar o arquivo: " + error);
     });
 }
+
 
 
 

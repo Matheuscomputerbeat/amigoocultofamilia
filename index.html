@@ -29,7 +29,7 @@
       max-width: 400px;
       text-align: center;
     }
-    input[type="text"], input[type="password"] {
+    input[type="text"] {
       width: 100%;
       padding: 10px;
       font-size: 16px;
@@ -49,13 +49,6 @@
     button:hover {
       background-color: #218838;
     }
-    .reset-button {
-      background-color: #dc3545;
-      margin-top: 10px;
-    }
-    .reset-button:hover {
-      background-color: #c82333;
-    }
     .result {
       margin-top: 20px;
       padding: 20px;
@@ -71,16 +64,12 @@
   <div class="container">
     <input type="text" id="nameInput" placeholder="Digite seu nome para ver seu par">
     <button onclick="viewSecretSanta()">Ver Meu Amigo Oculto</button>
-    <br><br>
-    <input type="password" id="adminPassword" placeholder="Digite a senha de admin">
-    <button class="reset-button" onclick="resetPairs()">Resetar Pares</button>
     <div class="result" id="result">
       <p id="secretSantaMessage"></p>
     </div>
   </div>
 
   <script>
-    const ADMIN_PASSWORD = "123456789####"; // Altere para sua senha
     let names = [];
     let pairs = {};
 
@@ -97,11 +86,25 @@
 
         console.log("Nomes carregados:", names);
 
-        generatePairs(); // Gerar pares assim que os nomes forem carregados
+        if (names.length < 2) {
+          alert("O arquivo precisa ter pelo menos dois nomes.");
+          return;
+        }
+
+        // Verificar se os pares já estão salvos no localStorage
+        const storedPairs = localStorage.getItem("pairs");
+        if (storedPairs) {
+          pairs = JSON.parse(storedPairs); // Carregar pares do localStorage
+        } else {
+          generatePairs(); // Caso contrário, gerar novos pares
+          localStorage.setItem("pairs", JSON.stringify(pairs)); // Salvar pares no localStorage
+        }
+
+        alert("Pares carregados com sucesso!");
       })
       .catch(error => {
         console.error("Erro ao carregar o arquivo:", error);
-        alert("Erro ao carregar o arquivo.");
+        alert("Erro ao carregar o arquivo: " + error);
       });
 
     // Função para gerar pares de amigo oculto
@@ -114,51 +117,31 @@
         const giver = givers.pop();
         const possibleReceivers = receivers.filter(receiver => receiver.toLowerCase() !== giver.toLowerCase());
         if (possibleReceivers.length === 0) {
-          alert("Não foi possível formar um par para " + giver + ". Tente novamente.");
+          alert(`Não foi possível formar um par para ${giver}. Tente novamente.`);
           return;
         }
-
+        
         const receiver = possibleReceivers[Math.floor(Math.random() * possibleReceivers.length)];
-
+        
         pairs[giver.toLowerCase()] = receiver;
         receivers.splice(receivers.indexOf(receiver), 1);
       }
-
-      // Armazenar os pares no localStorage
-      localStorage.setItem("pairs", JSON.stringify(pairs));
     }
 
-    // Função para exibir o par
     function viewSecretSanta() {
       const nameInput = document.getElementById('nameInput').value.trim().toLowerCase();
       const resultDiv = document.getElementById('result');
       const message = document.getElementById('secretSantaMessage');
 
-      // Recuperar os pares do localStorage
-      pairs = JSON.parse(localStorage.getItem("pairs")) || {};
-
       if (pairs[nameInput]) {
-        message.textContent = "Seu amigo oculto é: " + pairs[nameInput];
+        message.textContent = `Seu amigo oculto é: ${pairs[nameInput]}`;
         resultDiv.style.display = 'block';
       } else if (!names.map(name => name.toLowerCase()).includes(nameInput)) {
-        message.textContent = "O nome \"" + nameInput + "\" não está registrado.";
+        message.textContent = `O nome "${nameInput}" não está registrado.`;
         resultDiv.style.display = 'block';
       } else {
-        message.textContent = "Erro: nenhum par foi encontrado para " + nameInput + ".";
+        message.textContent = `Erro: nenhum par foi encontrado para ${nameInput}.`;
         resultDiv.style.display = 'block';
-      }
-    }
-
-    // Função para resetar os pares
-    function resetPairs() {
-      const enteredPassword = document.getElementById('adminPassword').value;
-
-      if (enteredPassword === ADMIN_PASSWORD) {
-        alert("Pares resetados com sucesso!");
-        generatePairs(); // Gerar novos pares e armazenar novamente
-        localStorage.removeItem("pairs"); // Remover os pares antigos do localStorage
-      } else {
-        alert("Senha incorreta. Você não tem permissão para resetar os pares.");
       }
     }
   </script>

@@ -101,28 +101,37 @@
 
     // Função para carregar nomes diretamente do GitHub
     function loadNamesFromGitHub() {
-      const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/refs/heads/main/Novo%20Documento%20de%20Texto.txt'; // URL pública do seu arquivo
+  const url = 'https://raw.githubusercontent.com/Matheuscomputerbeat/amigoocultofamilia/main/Novo%20Documento%20de%20Texto.txt'; // Verifique se o link está correto e público
 
-      fetch(url)
-        .then(response => response.text())
-        .then(content => {
-          names = content.split('\n').map(name => name.trim()).filter(name => name !== "");
+  // Adicionando mensagem de depuração ao clicar no botão
+  console.log("Botão de Carregar Nomes do GitHub foi clicado.");
 
-          if (names.length < 2) {
-            alert("O arquivo precisa ter pelo menos dois nomes.");
-            return;
-          }
+  fetch(url)
+    .then(response => {
+      console.log("Status da resposta:", response.status); // Mostra o status da resposta (200 para sucesso)
+      if (!response.ok) throw new Error("Erro ao carregar o arquivo: " + response.status);
+      return response.text();
+    })
+    .then(content => {
+      console.log("Conteúdo carregado do arquivo:", content); // Mostra o conteúdo carregado do arquivo
+      names = content.split('\n').map(name => name.trim()).filter(name => name !== "");
 
-          // Salvar nomes no Local Storage
-          localStorage.setItem("names", JSON.stringify(names));
+      if (names.length < 2) {
+        alert("O arquivo precisa ter pelo menos dois nomes.");
+        return;
+      }
 
-          // Verificar se já foi gerado o par de amigo oculto
-          if (!localStorage.getItem("pairs")) {
-            generatePairs(); // Gerar e armazenar os pares
-          }
-        })
-        .catch(error => console.error('Erro ao carregar o arquivo:', error));
-    }
+      // Salvar nomes no Local Storage
+      localStorage.setItem("names", JSON.stringify(names));
+
+      // Verificar se já foi gerado o par de amigo oculto
+      if (!localStorage.getItem("pairs")) {
+        generatePairs(); // Gerar e armazenar os pares
+      }
+    })
+    .catch(error => console.error('Erro ao carregar o arquivo:', error));
+}
+
 
     // Função para gerar e salvar os pares de amigo oculto
     function generatePairs() {
